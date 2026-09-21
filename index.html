@@ -146,7 +146,7 @@
             <h1 class="text-5xl md:text-6xl font-bold mt-5 mb-3 drop-shadow-md">
                 <span class="wobble">Liuxin is turning 7!</span>
             </h1>
-            <p class="text-lg md:text-xl opacity-95">Join us for a fun-filled Happy Meal party at McDonald's! 🍔🥳</p>
+            <p class="text-lg md:text-xl opacity-95">You're cordially invited to celebrate a fun-filled day with us! 🥳</p>
 
             <!-- Countdown timer -->
             <div id="countdown" class="mt-8 flex justify-center gap-3 md:gap-4">
@@ -175,7 +175,7 @@
         <!-- Party Details Card -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-pink-100 card-hover">
             <h2 class="text-2xl font-bold text-purple-600 mb-6 flex items-center gap-2">
-                🎈 Party Details
+                🎈 McDonald's Party Details
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
                 <div class="flex items-start gap-3">
@@ -205,10 +205,11 @@
 
             <div class="mt-6 pt-6 border-t border-gray-100">
                 <h3 class="font-bold text-gray-900 mb-3">🎁 Activities:</h3>
-                <ul class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                <ul class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                     <li class="bg-pink-50 rounded-xl p-3 text-center">🎨<br><span class="text-gray-700">Fun Arts &amp; Crafts</span></li>
                     <li class="bg-yellow-50 rounded-xl p-3 text-center">🍔<br><span class="text-gray-700">Kids Happy Meal</span></li>
                     <li class="bg-purple-50 rounded-xl p-3 text-center">🎂<br><span class="text-gray-700">Cake Cutting &amp; Group Photos</span></li>
+                    <li class="bg-red-50 rounded-xl p-3 text-center">🛍️<br><span class="text-gray-700">Free Goodie Bags</span></li>
                 </ul>
             </div>
 
@@ -230,8 +231,8 @@
 
         <!-- Happy Meal & Party Details -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-red-100 card-hover">
-            <h2 class="text-2xl font-bold text-red-600 mb-2 flex items-center gap-2">🍟 The Happy Meal Party</h2>
-            <p class="text-sm text-gray-500 mb-6">Every little guest gets their very own McDonald's Happy Meal — the star of the party! 🌟</p>
+            <h2 class="text-2xl font-bold text-red-600 mb-2 flex items-center gap-2">🍟 Happy Meal</h2>
+            <p class="text-sm text-gray-500 mb-6">Every little guest gets their very own McDonald's Happy Meal!</p>
 
             <!-- Happy Meal box illustration -->
             <div class="flex justify-center mb-8">
@@ -271,19 +272,7 @@
                     </div>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 mb-6">👉 Let us know your child's main choice in the RSVP below so we can pre-order.</p>
-
-            <!-- What's included -->
-            <div class="pt-6 border-t border-gray-100">
-                <h3 class="font-bold text-gray-900 mb-3">🎉 What's included in the party:</h3>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li class="flex items-start gap-2"><span>🧑‍🍳</span> A trained McDonald's party host &amp; assistant for the full 1 hour 45 minutes</li>
-                    <li class="flex items-start gap-2"><span>🎊</span> Party bunting &amp; party hats for all guests</li>
-                    <li class="flex items-start gap-2"><span>🎁</span> A party gift for every invitee</li>
-                    <li class="flex items-start gap-2"><span>🥤</span> Four exclusive McDonald's party cups for Liuxin</li>
-                    <li class="flex items-start gap-2"><span>🎂</span> Birthday cake &amp; unlimited vanilla soft serve</li>
-                </ul>
-            </div>
+            <p class="text-xs text-gray-500">👉 Let us know your child's main choice in the RSVP below so we can pre-order.</p>
         </section>
 
         <!-- RSVP Form -->
@@ -311,14 +300,7 @@
                         <option value="0">Sorry, we can't make it 😢</option>
                     </select>
                 </div>
-                <div>
-                    <label for="mealChoice" class="block text-sm font-medium text-gray-700 mb-1">Happy Meal Main Choice 🍔</label>
-                    <select id="mealChoice" name="Happy Meal Choice" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none bg-white">
-                        <option value="Cheeseburger">Cheeseburger</option>
-                        <option value="4-pc Chicken McNuggets">4-pc Chicken McNuggets®</option>
-                        <option value="No preference">No preference</option>
-                    </select>
-                </div>
+                <div id="mealChoicesWrap"></div>
                 <button type="submit" id="rsvpSubmit" class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white font-bold py-3 rounded-lg shadow transition">
                     Confirm Attendance
                 </button>
@@ -595,6 +577,66 @@
             link.click();
             URL.revokeObjectURL(link.href);
         });
+
+        /* ---------- Dynamic Happy Meal choices (one per attending kid) ---------- */
+        function makeMealSelect(name) {
+            const sel = document.createElement('select');
+            sel.name = name;
+            sel.className = 'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none bg-white';
+            // "No preference" is first, so it is the default selection
+            [['No preference', 'No preference'],
+             ['Cheeseburger', 'Cheeseburger'],
+             ['4-pc Chicken McNuggets', '4-pc Chicken McNuggets®']].forEach(([val, label]) => {
+                const o = document.createElement('option');
+                o.value = val;
+                o.textContent = label;
+                sel.appendChild(o);
+            });
+            return sel;
+        }
+
+        function renderMealChoices() {
+            const wrap = document.getElementById('mealChoicesWrap');
+            wrap.textContent = '';
+            const val = document.getElementById('guestCount').value;
+            if (val === '0') return; // not attending — no meal needed
+
+            const n = val === '5+' ? 5 : (parseInt(val, 10) || 1);
+            const label = document.createElement('label');
+            label.className = 'block text-sm font-medium text-gray-700 mb-1';
+
+            if (n === 1) {
+                label.textContent = 'Happy Meal Main Choice 🍔';
+                wrap.appendChild(label);
+                wrap.appendChild(makeMealSelect('Happy Meal Choice'));
+                return;
+            }
+
+            label.textContent = 'Happy Meal Main Choice for each kid 🍔';
+            wrap.appendChild(label);
+            const grid = document.createElement('div');
+            grid.className = 'space-y-2';
+            for (let i = 1; i <= n; i++) {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3';
+                const tag = document.createElement('span');
+                tag.className = 'text-sm text-gray-500 w-14 shrink-0';
+                tag.textContent = 'Kid ' + i;
+                row.appendChild(tag);
+                row.appendChild(makeMealSelect('Meal - Kid ' + i));
+                grid.appendChild(row);
+            }
+            wrap.appendChild(grid);
+
+            if (val === '5+') {
+                const note = document.createElement('p');
+                note.className = 'text-xs text-gray-400 mt-2';
+                note.textContent = 'Bringing more than 5 kids? Please share their choices when you contact us.';
+                wrap.appendChild(note);
+            }
+        }
+        document.getElementById('guestCount').addEventListener('change', renderMealChoices);
+        renderMealChoices();
 
         /* ---------- RSVP via FormSubmit (AJAX) ---------- */
         async function handleRSVP(event) {

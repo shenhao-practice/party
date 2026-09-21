@@ -59,6 +59,18 @@
         }
 
         /* Floating balloons */
+        #balloonLayer {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Keep page content above the balloon layer */
+        header, main, footer {
+            position: relative;
+            z-index: 1;
+        }
         .balloon {
             position: absolute;
             bottom: -120px;

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liuxin's 7th Birthday Party Invitation</title>
+    <meta name="description" content="You're invited to celebrate Liuxin's 7th birthday! Sunday, 11 Oct 2026 at McDonald's Marine Cove, East Coast Park.">
+
+    <!-- Open Graph (nice preview when the link is shared) -->
+    <meta property="og:title" content="Liuxin is turning 7! 🎉">
+    <meta property="og:description" content="You're cordially invited to a fun-filled birthday celebration. Sunday, 11 Oct 2026.">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap');
+
+        :root {
+            --brand-pink: #ec4899;
+            --brand-purple: #a855f7;
+            --brand-yellow: #fbbf24;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Noto Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated pastel background */
+        .party-bg {
+            background: linear-gradient(-45deg, #fce7f3, #f3e8ff, #fef9c3, #dbeafe);
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated header gradient */
+        .header-gradient {
+            background: linear-gradient(120deg, #f472b6, #c084fc, #fbbf24, #f472b6);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+        }
+
+        /* Entrance animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating balloons */
+        .balloon {
+            position: absolute;
+            bottom: -120px;
+            width: 46px;
+            height: 58px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: floatUp linear infinite;
+            z-index: 0;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -34px;
+            left: 50%;
+            width: 1px;
+            height: 34px;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.85; }
+            90%  { opacity: 0.85; }
+            100% { transform: translateY(-115vh) rotate(12deg); opacity: 0; }
+        }
+
+        /* Wobble the birthday title */
+        .wobble {
+            display: inline-block;
+            animation: wobble 4s ease-in-out infinite;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* Confetti piece */
+        .confetti {
+            position: fixed;
+            top: -10px;
+            width: 10px;
+            height: 14px;
+            z-index: 60;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0.9; }
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(168, 85, 247, 0.25);
+        }
+
+        /* Countdown flip cards */
+        .count-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .party-bg, .header-gradient, .balloon, .wobble, .confetti { animation: none !important; }
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+    </style>
+</head>
+<body class="party-bg text-gray-800 relative min-h-screen">
+
+    <!-- Floating balloons layer -->
+    <div id="balloonLayer" aria-hidden="true"></div>
+
+    <!-- Header / Banner -->
+    <header class="header-gradient text-white py-16 px-4 text-center shadow-lg relative z-10">
+        <div class="max-w-2xl mx-auto">
+            <span class="bg-white text-purple-600 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">🎉 Birthday Party Invitation</span>
+            <h1 class="text-5xl md:text-6xl font-bold mt-5 mb-3 drop-shadow-md">
+                <span class="wobble">Liuxin is turning 7!</span>
+            </h1>
+            <p class="text-lg md:text-xl opacity-95">You're cordially invited to celebrate a fun-filled day with us! 🥳</p>
+
+            <!-- Countdown timer -->
+            <div id="countdown" class="mt-8 flex justify-center gap-3 md:gap-4">
+                <div class="count-box rounded-2xl px-4 py-3 w-20 shadow-md">
+                    <div id="cd-days" class="text-3xl font-bold text-purple-600">--</div>
+                    <div class="text-xs uppercase tracking-wide text-gray-500">Days</div>
+                </div>
+                <div class="count-box rounded-2xl px-4 py-3 w-20 shadow-md">
+                    <div id="cd-hours" class="text-3xl font-bold text-pink-500">--</div>
+                    <div class="text-xs uppercase tracking-wide text-gray-500">Hours</div>
+                </div>
+                <div class="count-box rounded-2xl px-4 py-3 w-20 shadow-md">
+                    <div id="cd-mins" class="text-3xl font-bold text-purple-600">--</div>
+                    <div class="text-xs uppercase tracking-wide text-gray-500">Mins</div>
+                </div>
+                <div class="count-box rounded-2xl px-4 py-3 w-20 shadow-md">
+                    <div id="cd-secs" class="text-3xl font-bold text-pink-500">--</div>
+                    <div class="text-xs uppercase tracking-wide text-gray-500">Secs</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-10 space-y-8 relative z-10">
+
+        <!-- Party Details Card -->
+        <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-pink-100 card-hover">
+            <h2 class="text-2xl font-bold text-purple-600 mb-6 flex items-center gap-2">
+                🎈 Party Details
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📍</span>
+                    <div>
+                        <strong class="block text-gray-900">Location</strong>
+                        <span class="text-sm block text-gray-600">McDonald's Marine Cove</span>
+                        <span class="text-xs text-gray-500 block mt-1">1000 East Coast Parkway #01-05 Marine Cove, East Coast Park, Singapore 449876</span>
+                        <!-- Shared Google Map Link Button -->
+                        <a href="https://maps.app.goo.gl/vrzj6tGAtpg2KSaU9" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-2 text-xs font-bold text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg transition">
+                            🗺️ Open in Google Maps
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">⏰</span>
+                    <div>
+                        <strong class="block text-gray-900">Time</strong>
+                        <span class="text-sm">Sunday, 11 Oct, 2026, at 18:00 - 19:45</span>
+                        <!-- Add to calendar -->
+                        <a href="#" id="addToCalendar" class="inline-flex items-center gap-1 mt-2 text-xs font-bold text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg transition">
+                            📅 Add to Calendar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Embedded Google Map -->
+            <div class="mt-6 pt-6 border-t border-gray-100">
+                <h3 class="font-bold text-gray-900 mb-3">🗺️ Map Location:</h3>
+                <div class="w-full h-64 rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7887653230514!2d103.91031047549455!3d1.3016528986859928!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1876475e7343%3A0xafd74b9dba0fe6c8!2sMcDonald's%20Marine%20Cove!5e0!3m2!1sen!2ssg!4v1789970276893!5m2!1sen!2ssg" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="Party location map"></iframe>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-100">
+                <h3 class="font-bold text-gray-900 mb-3">🎁 Activities:</h3>
+                <ul class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                    <li class="bg-pink-50 rounded-xl p-3 text-center">🎨<br><span class="text-gray-700">Fun Arts &amp; Crafts</span></li>
+                    <li class="bg-yellow-50 rounded-xl p-3 text-center">🍔<br><span class="text-gray-700">Kids Happy Meal</span></li>
+                    <li class="bg-purple-50 rounded-xl p-3 text-center">🎂<br><span class="text-gray-700">Cake Cutting &amp; Group Photos</span></li>
+                </ul>
+            </div>
+
+            <!-- Download Invitation Button -->
+            <div class="mt-8 text-center">
+                <button onclick="downloadInvitation()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 px-6 rounded-full shadow transition transform hover:scale-105">
+                    📥 Download Invitation Card
+                </button>
+            </div>
+        </section>
+
+        <!-- RSVP Form -->
+        <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-purple-100 card-hover">
+            <h2 class="text-2xl font-bold text-purple-600 mb-2">✍️ RSVP</h2>
+            <p class="text-sm text-gray-500 mb-6">Please fill out the form below to let us know if you can make it. A confirmation will be sent to your email.</p>
+
+            <form id="rsvpForm" onsubmit="handleRSVP(event)" class="space-y-4">
+                <div>
+                    <label for="childName" class="block text-sm font-medium text-gray-700 mb-1">Child's Name *</label>
+                    <input type="text" id="childName" name="Child's Name" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="Enter child's name">
+                </div>
+                <div>
+                    <label for="parentPhone" class="block text-sm font-medium text-gray-700 mb-1">Parent's Phone Number *</label>
+                    <input type="tel" id="parentPhone" name="Parent's Phone" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="Enter contact number">
+                </div>
+                <div>
+                    <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-1">Number of Guests Attending *</label>
+                    <select id="guestCount" name="Guests Attending" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none bg-white">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5+">5 or more</option>
+                        <option value="0">Sorry, we can't make it 😢</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="parentEmail" class="block text-sm font-medium text-gray-700 mb-1">Email (Optional - for confirmation email)</label>
+                    <input type="email" id="parentEmail" name="email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="example@domain.com">
+                </div>
+                <button type="submit" id="rsvpSubmit" class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white font-bold py-3 rounded-lg shadow transition">
+                    Confirm Attendance
+                </button>
+            </form>
+            <div id="rsvpMessage" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-lg text-center text-sm">
+                🎉 Response submitted successfully! We look forward to seeing you at the party!
+            </div>
+            <div id="rsvpError" class="hidden mt-4 p-4 bg-red-50 text-red-700 rounded-lg text-center text-sm"></div>
+        </section>
+
+        <!-- Photo Gallery & Upload Section -->
+        <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-yellow-100 card-hover">
+            <h2 class="text-2xl font-bold text-purple-600 mb-2">📸 Party Moments</h2>
+            <p class="text-sm text-gray-500 mb-6">After the party, photos will be uploaded here. Parents can freely view and download them anytime!</p>
+
+            <!-- Upload Area -->
+            <div class="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-xl text-center hover:bg-gray-50 transition">
+                <label class="cursor-pointer">
+                    <span class="text-sm text-gray-600 block mb-1">📁 Took some great photos? Click here to upload and share</span>
+                    <input type="file" multiple accept="image/*" class="hidden" onchange="handleUpload(event)">
+                </label>
+                <div id="uploadProgress" class="hidden mt-3 text-sm text-purple-600 font-medium"></div>
+            </div>
+
+            <!-- Photo Grid -->
+            <div id="photoGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div id="galleryPlaceholder" class="relative group bg-gray-100 rounded-lg overflow-hidden aspect-square flex items-center justify-center text-gray-400 text-sm col-span-2 md:col-span-3">
+                    <span>Photos coming soon...</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-xs text-gray-400 relative z-10">
+        <p>© 2026 Liuxin's 7th Birthday Party. Made with 💜</p>
+    </footer>
+
+    <!-- Lightbox for viewing photos -->
+    <div id="lightbox" class="hidden fixed inset-0 bg-black/80 z-50 items-center justify-center p-4" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" alt="Party photo" class="max-h-[85vh] max-w-full rounded-lg shadow-2xl">
+    </div>
+
+    <!-- JavaScript Interaction Logic -->
+    <script>
+        /* ============================================================
+           CONFIGURATION — edit these values, then commit & push.
+           ------------------------------------------------------------
+           1) RSVP_EMAIL: your email. RSVPs are sent here via FormSubmit
+              (https://formsubmit.co) — free, no signup, no backend.
+              The FIRST time a form is submitted to a new address,
+              FormSubmit emails you a one-time link to confirm it.
+           2) CLOUDINARY: create a free account at cloudinary.com.
+              - CLOUD_NAME: found on your Cloudinary dashboard.
+              - UPLOAD_PRESET: Settings → Upload → add an UNSIGNED preset.
+              - For the gallery to list photos, enable resource listing:
+                Settings → Security → uncheck "Resource list" restriction.
+              Photos are tagged so the gallery can fetch them.
+           ============================================================ */
+        const CONFIG = {
+            RSVP_EMAIL: "your-email@example.com",
+            CLOUDINARY: {
+                CLOUD_NAME: "your_cloud_name",
+                UPLOAD_PRESET: "your_unsigned_preset",
+                TAG: "liuxin_birthday_7"
+            },
+            // Party date/time (local Singapore time). Month is 0-indexed: 9 = October.
+            PARTY_START: new Date(2026, 9, 11, 18, 0, 0),
+            PARTY_END: new Date(2026, 9, 11, 19, 45, 0)
+        };
+
+        /* ---------- Countdown timer ---------- */
+        function updateCountdown() {
+            const now = new Date();
+            let diff = Math.floor((CONFIG.PARTY_START - now) / 1000);
+            if (diff < 0) diff = 0;
+            const days = Math.floor(diff / 86400);
+            const hours = Math.floor((diff % 86400) / 3600);
+            const mins = Math.floor((diff % 3600) / 60);
+            const secs = diff % 60;
+            const pad = (n) => String(n).padStart(2, '0');
+            document.getElementById('cd-days').textContent = days;
+            document.getElementById('cd-hours').textContent = pad(hours);
+            document.getElementById('cd-mins').textContent = pad(mins);
+            document.getElementById('cd-secs').textContent = pad(secs);
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        /* ---------- Scroll reveal ---------- */
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    revealObserver.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+        /* ---------- Floating balloons ---------- */
+        (function spawnBalloons() {
+            const layer = document.getElementById('balloonLayer');
+            const colors = ['#f472b6', '#c084fc', '#fbbf24', '#60a5fa', '#34d399'];
+            const count = window.innerWidth < 640 ? 6 : 12;
+            for (let i = 0; i < count; i++) {
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.background = colors[i % colors.length];
+                b.style.animationDuration = (12 + Math.random() * 12) + 's';
+                b.style.animationDelay = (Math.random() * 12) + 's';
+                const scale = 0.7 + Math.random() * 0.9;
+                b.style.transform = `scale(${scale})`;
+                layer.appendChild(b);
+            }
+        })();
+
+        /* ---------- Confetti burst ---------- */
+        function launchConfetti() {
+            const colors = ['#f472b6', '#c084fc', '#fbbf24', '#60a5fa', '#34d399', '#f87171'];
+            for (let i = 0; i < 120; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                c.style.animationDuration = (2 + Math.random() * 2) + 's';
+                c.style.animationDelay = (Math.random() * 0.4) + 's';
+                if (Math.random() > 0.5) c.style.borderRadius = '50%';
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 4500);
+            }
+        }
+
+        /* ---------- Download invitation card (real PNG via canvas) ---------- */
+        function downloadInvitation() {
+            const W = 1080, H = 1350;
+            const canvas = document.createElement('canvas');
+            canvas.width = W; canvas.height = H;
+            const ctx = canvas.getContext('2d');
+
+            // Gradient background
+            const grad = ctx.createLinearGradient(0, 0, W, H);
+            grad.addColorStop(0, '#f472b6');
+            grad.addColorStop(0.5, '#c084fc');
+            grad.addColorStop(1, '#fbbf24');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // White rounded card
+            const pad = 80, r = 48;
+            const cx = pad, cy = pad, cw = W - pad * 2, ch = H - pad * 2;
+            ctx.fillStyle = 'rgba(255,255,255,0.96)';
+            roundRect(ctx, cx, cy, cw, ch, r);
+            ctx.fill();
+
+            ctx.textAlign = 'center';
+            const midX = W / 2;
+
+            ctx.font = '90px serif';
+            ctx.fillText('🎉🎂🎈', midX, 320);
+
+            ctx.fillStyle = '#a855f7';
+            ctx.font = 'bold 96px Fredoka, sans-serif';
+            ctx.fillText("Liuxin is turning 7!", midX, 470);
+
+            ctx.fillStyle = '#374151';
+            ctx.font = '40px Fredoka, sans-serif';
+            ctx.fillText("You're invited to celebrate", midX, 560);
+            ctx.fillText("a fun-filled day with us!", midX, 615);
+
+            // Divider
+            ctx.strokeStyle = '#f3e8ff';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(midX - 300, 690); ctx.lineTo(midX + 300, 690); ctx.stroke();
+
+            ctx.fillStyle = '#ec4899';
+            ctx.font = 'bold 46px Fredoka, sans-serif';
+            ctx.fillText('📅 Sunday, 11 October 2026', midX, 790);
+            ctx.fillText('⏰ 6:00 PM – 7:45 PM', midX, 870);
+
+            ctx.fillStyle = '#374151';
+            ctx.font = '38px Fredoka, sans-serif';
+            ctx.fillText("📍 McDonald's Marine Cove", midX, 970);
+            ctx.font = '30px Fredoka, sans-serif';
+            ctx.fillStyle = '#6b7280';
+            ctx.fillText('East Coast Park, Singapore', midX, 1020);
+
+            ctx.fillStyle = '#a855f7';
+            ctx.font = 'bold 40px Fredoka, sans-serif';
+            ctx.fillText('🎨 Arts & Crafts  •  🍔 Happy Meal  •  🎂 Cake', midX, 1130);
+
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '30px Fredoka, sans-serif';
+            ctx.fillText('Please RSVP — we can’t wait to see you!', midX, 1230);
+
+            const link = document.createElement('a');
+            link.download = "Liuxin-7th-Birthday-Invitation.png";
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            launchConfetti();
+        }
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        /* ---------- Add to calendar (.ics download) ---------- */
+        document.getElementById('addToCalendar').addEventListener('click', function (e) {
+            e.preventDefault();
+            const fmt = (d) => d.getFullYear() +
+                String(d.getMonth() + 1).padStart(2, '0') +
+                String(d.getDate()).padStart(2, '0') + 'T' +
+                String(d.getHours()).padStart(2, '0') +
+                String(d.getMinutes()).padStart(2, '0') + '00';
+            const ics = [
+                'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Birthday//EN',
+                'BEGIN:VEVENT',
+                'UID:' + Date.now() + '@birthday',
+                'DTSTART:' + fmt(CONFIG.PARTY_START),
+                'DTEND:' + fmt(CONFIG.PARTY_END),
+                "SUMMARY:Liuxin's 7th Birthday Party 🎉",
+                "LOCATION:McDonald's Marine Cove, East Coast Park, Singapore",
+                'DESCRIPTION:Join us to celebrate Liuxin turning 7!',
+                'END:VEVENT', 'END:VCALENDAR'
+            ].join('\r\n');
+            const blob = new Blob([ics], { type: 'text/calendar' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Liuxin-Birthday.ics';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+
+        /* ---------- RSVP via FormSubmit (AJAX) ---------- */
+        async function handleRSVP(event) {
+            event.preventDefault();
+            const form = document.getElementById('rsvpForm');
+            const btn = document.getElementById('rsvpSubmit');
+            const msg = document.getElementById('rsvpMessage');
+            const errBox = document.getElementById('rsvpError');
+            errBox.classList.add('hidden');
+
+            if (!CONFIG.RSVP_EMAIL || CONFIG.RSVP_EMAIL === 'your-email@example.com') {
+                errBox.textContent = '⚠️ RSVP email is not configured yet. (Set CONFIG.RSVP_EMAIL in index.html.)';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            const data = new FormData(form);
+            data.append('_subject', "🎉 New RSVP for Liuxin's Birthday!");
+            data.append('_template', 'table');
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Sending...';
+
+            try {
+                const res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONFIG.RSVP_EMAIL), {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: data
+                });
+                if (!res.ok) throw new Error('Network response was not ok');
+                await res.json();
+                msg.classList.remove('hidden');
+                form.reset();
+                launchConfetti();
+                msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (err) {
+                errBox.textContent = '😢 Sorry, something went wrong sending your RSVP. Please try again or contact us directly.';
+                errBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        /* ---------- Photo gallery (Cloudinary) ---------- */
+        const cloudinaryConfigured = () =>
+            CONFIG.CLOUDINARY.CLOUD_NAME && CONFIG.CLOUDINARY.CLOUD_NAME !== 'your_cloud_name' &&
+            CONFIG.CLOUDINARY.UPLOAD_PRESET && CONFIG.CLOUDINARY.UPLOAD_PRESET !== 'your_unsigned_preset';
+
+        async function handleUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            if (!cloudinaryConfigured()) {
+                alert('⚠️ Photo sharing is not configured yet.\nSet CONFIG.CLOUDINARY.CLOUD_NAME and UPLOAD_PRESET in index.html to enable uploads.');
+                event.target.value = '';
+                return;
+            }
+
+            const progress = document.getElementById('uploadProgress');
+            progress.classList.remove('hidden');
+            const url = `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY.CLOUD_NAME}/image/upload`;
+            let done = 0;
+
+            for (const file of files) {
+                progress.textContent = `Uploading ${done + 1} of ${files.length}...`;
+                const fd = new FormData();
+                fd.append('file', file);
+                fd.append('upload_preset', CONFIG.CLOUDINARY.UPLOAD_PRESET);
+                fd.append('tags', CONFIG.CLOUDINARY.TAG);
+                try {
+                    const res = await fetch(url, { method: 'POST', body: fd });
+                    const result = await res.json();
+                    if (result.secure_url) {
+                        addPhotoToGrid(result.secure_url);
+                        done++;
+                    }
+                } catch (err) {
+                    console.error('Upload failed', err);
+                }
+            }
+
+            progress.textContent = `✅ Uploaded ${done} photo(s)! Thank you for sharing 💜`;
+            event.target.value = '';
+            setTimeout(() => progress.classList.add('hidden'), 4000);
+        }
+
+        function addPhotoToGrid(imageUrl) {
+            const grid = document.getElementById('photoGrid');
+            const placeholder = document.getElementById('galleryPlaceholder');
+            if (placeholder) placeholder.remove();
+
+            // Use a smaller transformed thumbnail for the grid
+            const thumb = imageUrl.replace('/upload/', '/upload/w_500,h_500,c_fill,q_auto,f_auto/');
+
+            const wrap = document.createElement('div');
+            wrap.className = 'relative group bg-gray-100 rounded-lg overflow-hidden aspect-square cursor-pointer';
+            wrap.innerHTML = `
+                <img src="${thumb}" alt="Party photo" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                <a href="${imageUrl}" download target="_blank" rel="noopener"
+                   class="absolute bottom-2 right-2 bg-white/90 text-purple-600 text-xs font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition"
+                   onclick="event.stopPropagation()">⬇️ Save</a>`;
+            wrap.querySelector('img').addEventListener('click', () => openLightbox(imageUrl));
+            grid.prepend(wrap);
+        }
+
+        async function loadGallery() {
+            if (!cloudinaryConfigured()) return;
+            const listUrl = `https://res.cloudinary.com/${CONFIG.CLOUDINARY.CLOUD_NAME}/image/list/${CONFIG.CLOUDINARY.TAG}.json`;
+            try {
+                const res = await fetch(listUrl);
+                if (!res.ok) return; // list may be empty or restricted
+                const data = await res.json();
+                if (data.resources && data.resources.length) {
+                    // Oldest first so prepend() ends with newest on top
+                    data.resources
+                        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+                        .forEach((r) => {
+                            const src = `https://res.cloudinary.com/${CONFIG.CLOUDINARY.CLOUD_NAME}/image/upload/v${r.version}/${r.public_id}.${r.format}`;
+                            addPhotoToGrid(src);
+                        });
+                }
+            } catch (err) {
+                console.warn('Could not load gallery list', err);
+            }
+        }
+        loadGallery();
+
+        /* ---------- Lightbox ---------- */
+        function openLightbox(src) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightboxImg').src = src;
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+        }
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            lb.classList.add('hidden');
+            lb.classList.remove('flex');
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+    </script>
+</body>
+</html>

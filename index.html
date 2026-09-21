@@ -122,10 +122,81 @@
         .count-box {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
+            transition: transform 0.2s ease;
+        }
+        /* Seconds box pops each tick */
+        .pop { animation: pop 0.35s ease; }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.18); }
+            100% { transform: scale(1); }
+        }
+
+        /* Gentle bobbing (Happy Meal box, logo) */
+        .bob { animation: bob 3.5s ease-in-out infinite; }
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Bouncing emoji in section headings */
+        .bounce-emoji { display: inline-block; animation: bounceEmoji 2.2s ease-in-out infinite; }
+        @keyframes bounceEmoji {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            30% { transform: translateY(-6px) rotate(-8deg); }
+            60% { transform: translateY(0) rotate(8deg); }
+        }
+
+        /* Shimmer sweep across primary buttons */
+        .shiny { position: relative; overflow: hidden; }
+        .shiny::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 60%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+            transform: skewX(-20deg);
+            animation: shine 3.2s ease-in-out infinite;
+        }
+        @keyframes shine {
+            0% { left: -150%; }
+            60%, 100% { left: 150%; }
+        }
+
+        /* Soft pulsing glow for the RSVP submit button */
+        .pulse-glow { animation: pulseGlow 2.4s ease-in-out infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.45); }
+            50% { box-shadow: 0 0 0 12px rgba(168, 85, 247, 0); }
+        }
+
+        /* Hover pop for activity / meal tiles */
+        .tile-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .tile-hover:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 12px 24px -10px rgba(0,0,0,0.18); }
+
+        /* Staggered reveal timing */
+        .reveal:nth-of-type(2) { transition-delay: 0.08s; }
+        .reveal:nth-of-type(3) { transition-delay: 0.16s; }
+        .reveal:nth-of-type(4) { transition-delay: 0.24s; }
+
+        /* Twinkling stars in the header */
+        .twinkle {
+            position: absolute;
+            color: #fff;
+            opacity: 0;
+            animation: twinkle 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.6); }
+            50% { opacity: 0.9; transform: scale(1.1); }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .party-bg, .header-gradient, .balloon, .wobble, .confetti { animation: none !important; }
+            .party-bg, .header-gradient, .balloon, .wobble, .confetti,
+            .bob, .bounce-emoji, .shiny::after, .pulse-glow, .pop, .twinkle { animation: none !important; }
+            .shiny::after { display: none; }
             .reveal { opacity: 1; transform: none; transition: none; }
         }
     </style>
@@ -136,10 +207,11 @@
     <div id="balloonLayer" aria-hidden="true"></div>
 
     <!-- Header / Banner -->
-    <header class="header-gradient text-white py-16 px-4 text-center shadow-lg relative z-10">
-        <div class="max-w-2xl mx-auto">
+    <header class="header-gradient text-white py-16 px-4 text-center shadow-lg relative z-10 overflow-hidden">
+        <div id="starLayer" aria-hidden="true"></div>
+        <div class="max-w-2xl mx-auto relative z-10">
             <!-- McDonald's Golden Arches -->
-            <svg class="mx-auto mb-4 h-16 md:h-20 drop-shadow-lg" viewBox="0 0 272.70001 238.5" role="img" aria-label="McDonald's">
+            <svg class="mx-auto mb-4 h-16 md:h-20 drop-shadow-lg bob" viewBox="0 0 272.70001 238.5" role="img" aria-label="McDonald's">
                 <path fill="#ffc72c" d="m195.8 17.933c23.3 0 42.2 98.3 42.2 219.7h34c0-130.7-34.3-236.5-76.3-236.5-24 0-45.2 31.7-59.2 81.5-14-49.8-35.2-81.5-59-81.5-42 0-76.2 105.7-76.2 236.4h34c0-121.4 18.7-219.6 42-219.6s42.2 90.8 42.2 202.8h33.8c0-112 19-202.8 42.3-202.8"/>
             </svg>
             <span class="bg-white text-red-600 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">🎉 A McDonald's Birthday Party</span>
@@ -175,7 +247,7 @@
         <!-- Party Details Card -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-pink-100 card-hover">
             <h2 class="text-2xl font-bold text-purple-600 mb-6 flex items-center gap-2">
-                🎈 McDonald's Party Details
+                <span class="bounce-emoji">🎈</span> McDonald's Party Details
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
                 <div class="flex items-start gap-3">
@@ -206,10 +278,10 @@
             <div class="mt-6 pt-6 border-t border-gray-100">
                 <h3 class="font-bold text-gray-900 mb-3">🎁 Activities:</h3>
                 <ul class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                    <li class="bg-pink-50 rounded-xl p-3 text-center">🎨<br><span class="text-gray-700">Fun Arts &amp; Crafts</span></li>
-                    <li class="bg-yellow-50 rounded-xl p-3 text-center">🍔<br><span class="text-gray-700">Kids Happy Meal</span></li>
-                    <li class="bg-purple-50 rounded-xl p-3 text-center">🎂<br><span class="text-gray-700">Cake Cutting &amp; Group Photos</span></li>
-                    <li class="bg-red-50 rounded-xl p-3 text-center">🛍️<br><span class="text-gray-700">Free Goodie Bags</span></li>
+                    <li class="tile-hover bg-pink-50 rounded-xl p-3 text-center">🎨<br><span class="text-gray-700">Fun Arts &amp; Crafts</span></li>
+                    <li class="tile-hover bg-yellow-50 rounded-xl p-3 text-center">🍔<br><span class="text-gray-700">Kids Happy Meal</span></li>
+                    <li class="tile-hover bg-purple-50 rounded-xl p-3 text-center">🎂<br><span class="text-gray-700">Cake Cutting &amp; Group Photos</span></li>
+                    <li class="tile-hover bg-red-50 rounded-xl p-3 text-center">🛍️<br><span class="text-gray-700">Free Goodie Bags</span></li>
                 </ul>
             </div>
 
@@ -223,7 +295,7 @@
 
             <!-- Download Invitation Button -->
             <div class="mt-8 text-center">
-                <button onclick="downloadInvitation()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 px-6 rounded-full shadow transition transform hover:scale-105">
+                <button onclick="downloadInvitation()" class="shiny bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 px-6 rounded-full shadow transition transform hover:scale-105">
                     📥 Download Invitation Card
                 </button>
             </div>
@@ -231,12 +303,12 @@
 
         <!-- Happy Meal & Party Details -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-red-100 card-hover">
-            <h2 class="text-2xl font-bold text-red-600 mb-2 flex items-center gap-2">🍟 Happy Meal</h2>
+            <h2 class="text-2xl font-bold text-red-600 mb-2 flex items-center gap-2"><span class="bounce-emoji">🍟</span> Happy Meal</h2>
             <p class="text-sm text-gray-500 mb-6">Every little guest gets their very own McDonald's Happy Meal!</p>
 
             <!-- Happy Meal box illustration -->
             <div class="flex justify-center mb-8">
-                <div class="relative w-56 max-w-full">
+                <div class="relative w-56 max-w-full bob">
                     <!-- Golden arch handle -->
                     <svg class="absolute -top-6 left-1/2 -translate-x-1/2 h-12 z-10" viewBox="0 0 272.70001 238.5" role="img" aria-label="McDonald's Happy Meal">
                         <path fill="#ffc72c" d="m195.8 17.933c23.3 0 42.2 98.3 42.2 219.7h34c0-130.7-34.3-236.5-76.3-236.5-24 0-45.2 31.7-59.2 81.5-14-49.8-35.2-81.5-59-81.5-42 0-76.2 105.7-76.2 236.4h34c0-121.4 18.7-219.6 42-219.6s42.2 90.8 42.2 202.8h33.8c0-112 19-202.8 42.3-202.8"/>
@@ -277,7 +349,7 @@
 
         <!-- RSVP Form -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-purple-100 card-hover">
-            <h2 class="text-2xl font-bold text-purple-600 mb-2">✍️ RSVP</h2>
+            <h2 class="text-2xl font-bold text-purple-600 mb-2"><span class="bounce-emoji">✍️</span> RSVP</h2>
             <p class="text-sm text-gray-500 mb-6">Please fill out the form below to let us know if you can make it. We can't wait to celebrate with you!</p>
 
             <form id="rsvpForm" onsubmit="handleRSVP(event)" class="space-y-4">
@@ -301,7 +373,7 @@
                     </select>
                 </div>
                 <div id="mealChoicesWrap"></div>
-                <button type="submit" id="rsvpSubmit" class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white font-bold py-3 rounded-lg shadow transition">
+                <button type="submit" id="rsvpSubmit" class="pulse-glow shiny w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white font-bold py-3 rounded-lg shadow transition">
                     Confirm Attendance
                 </button>
             </form>
@@ -313,7 +385,7 @@
 
         <!-- Photo Gallery & Upload Section -->
         <section class="reveal bg-white/90 backdrop-blur rounded-3xl shadow-md p-6 md:p-8 border-2 border-yellow-100 card-hover">
-            <h2 class="text-2xl font-bold text-purple-600 mb-2">📸 Party Moments</h2>
+            <h2 class="text-2xl font-bold text-purple-600 mb-2"><span class="bounce-emoji">📸</span> Party Moments</h2>
             <p class="text-sm text-gray-500 mb-6">After the party, photos will be uploaded here. Parents can freely view and download them anytime!</p>
 
             <!-- Upload Area -->
@@ -385,10 +457,33 @@
             document.getElementById('cd-days').textContent = days;
             document.getElementById('cd-hours').textContent = pad(hours);
             document.getElementById('cd-mins').textContent = pad(mins);
-            document.getElementById('cd-secs').textContent = pad(secs);
+            const secsEl = document.getElementById('cd-secs');
+            secsEl.textContent = pad(secs);
+            // pop the seconds box each tick
+            const box = secsEl.parentElement;
+            box.classList.remove('pop');
+            void box.offsetWidth; // restart animation
+            box.classList.add('pop');
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);
+
+        /* ---------- Twinkling stars in header ---------- */
+        (function spawnStars() {
+            const layer = document.getElementById('starLayer');
+            if (!layer) return;
+            const count = 18;
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('span');
+                s.className = 'twinkle';
+                s.textContent = Math.random() > 0.5 ? '✦' : '✧';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.fontSize = (10 + Math.random() * 16) + 'px';
+                s.style.animationDelay = (Math.random() * 3) + 's';
+                layer.appendChild(s);
+            }
+        })();
 
         /* ---------- Scroll reveal ---------- */
         const revealObserver = new IntersectionObserver((entries) => {
@@ -779,6 +874,13 @@
             lb.classList.remove('flex');
         }
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+        /* ---------- Gentle confetti welcome on load ---------- */
+        window.addEventListener('load', () => {
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                setTimeout(launchConfetti, 400);
+            }
+        });
     </script>
 </body>
 </html>

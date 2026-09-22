@@ -575,7 +575,7 @@
 
         /* ---------- Download invitation card (real PNG via canvas) ---------- */
         function downloadInvitation() {
-            const W = 1080, H = 1550;
+            const W = 1080, H = 1620;
             const canvas = document.createElement('canvas');
             canvas.width = W; canvas.height = H;
             const ctx = canvas.getContext('2d');
@@ -656,6 +656,10 @@
                 ctx.font = 'bold 34px Fredoka, sans-serif';
                 ctx.fillText('🎨 Arts & Games  •  🍔 Happy Meal', midX, 1400);
                 ctx.fillText('🎂 Cake & Photos  •  🛍️ Goodie Bags', midX, 1448);
+
+                ctx.fillStyle = '#ec4899';
+                ctx.font = 'bold 34px Fredoka, sans-serif';
+                ctx.fillText('💌 RSVP to Hao  •  +65 89183498', midX, 1530);
 
                 const link = document.createElement('a');
                 link.download = "Liuxin-7th-Birthday-Invitation.png";

@@ -232,6 +232,11 @@
             </h1>
             <p class="text-lg md:text-xl opacity-95">You're cordially invited to celebrate a fun-filled day with us! 🥳</p>
 
+            <!-- Hero photo -->
+            <div class="mx-auto mt-7 max-w-md rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/70 tile-hover" style="aspect-ratio: 1400 / 990;">
+                <img src="birthday-hero.jpg" alt="Liuxin celebrating her birthday with cupcakes and a goodie bag" class="w-full h-full object-cover object-top" width="1400" height="990">
+            </div>
+
             <!-- Countdown timer -->
             <div id="countdown" class="mt-8 flex justify-center gap-3 md:gap-4">
                 <div class="count-box rounded-2xl px-4 py-3 w-20 shadow-md">
@@ -570,84 +575,101 @@
 
         /* ---------- Download invitation card (real PNG via canvas) ---------- */
         function downloadInvitation() {
-            const W = 1080, H = 1350;
+            const W = 1080, H = 1550;
             const canvas = document.createElement('canvas');
             canvas.width = W; canvas.height = H;
             const ctx = canvas.getContext('2d');
-
-            // Gradient background
-            const grad = ctx.createLinearGradient(0, 0, W, H);
-            grad.addColorStop(0, '#f472b6');
-            grad.addColorStop(0.5, '#c084fc');
-            grad.addColorStop(1, '#fbbf24');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, W, H);
-
-            // White rounded card
-            const pad = 80, r = 48;
-            const cx = pad, cy = pad, cw = W - pad * 2, ch = H - pad * 2;
-            ctx.fillStyle = 'rgba(255,255,255,0.96)';
-            roundRect(ctx, cx, cy, cw, ch, r);
-            ctx.fill();
-
-            ctx.textAlign = 'center';
             const midX = W / 2;
 
-            // McDonald's Golden Arches
-            ctx.save();
-            const archScale = 0.62;
-            ctx.translate(midX - (272.7 * archScale) / 2, 175);
-            ctx.scale(archScale, archScale);
-            ctx.fillStyle = '#ffc72c';
-            ctx.fill(new Path2D('m195.8 17.933c23.3 0 42.2 98.3 42.2 219.7h34c0-130.7-34.3-236.5-76.3-236.5-24 0-45.2 31.7-59.2 81.5-14-49.8-35.2-81.5-59-81.5-42 0-76.2 105.7-76.2 236.4h34c0-121.4 18.7-219.6 42-219.6s42.2 90.8 42.2 202.8h33.8c0-112 19-202.8 42.3-202.8'));
-            ctx.restore();
+            const render = (photo) => {
+                // Gradient background
+                const grad = ctx.createLinearGradient(0, 0, W, H);
+                grad.addColorStop(0, '#f472b6');
+                grad.addColorStop(0.5, '#c084fc');
+                grad.addColorStop(1, '#fbbf24');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, W, H);
 
-            ctx.font = '54px serif';
-            ctx.fillText('🎉🎂🎈', midX, 385);
+                // White rounded card
+                const pad = 64, r = 48;
+                ctx.fillStyle = 'rgba(255,255,255,0.96)';
+                roundRect(ctx, pad, pad, W - pad * 2, H - pad * 2, r);
+                ctx.fill();
 
-            ctx.fillStyle = '#a855f7';
-            ctx.font = 'bold 92px Fredoka, sans-serif';
-            ctx.fillText("Liuxin is turning 7!", midX, 475);
+                ctx.textAlign = 'center';
 
-            ctx.fillStyle = '#DA291C';
-            ctx.font = 'bold 40px Fredoka, sans-serif';
-            ctx.fillText("🎉 A McDonald's Birthday Party", midX, 545);
-            ctx.fillStyle = '#374151';
-            ctx.font = '34px Fredoka, sans-serif';
-            ctx.fillText("You're cordially invited to celebrate", midX, 600);
-            ctx.fillText("a fun-filled day with us! 🥳", midX, 642);
+                // McDonald's Golden Arches
+                ctx.save();
+                const archScale = 0.42;
+                ctx.translate(midX - (272.7 * archScale) / 2, 96);
+                ctx.scale(archScale, archScale);
+                ctx.fillStyle = '#ffc72c';
+                ctx.fill(new Path2D('m195.8 17.933c23.3 0 42.2 98.3 42.2 219.7h34c0-130.7-34.3-236.5-76.3-236.5-24 0-45.2 31.7-59.2 81.5-14-49.8-35.2-81.5-59-81.5-42 0-76.2 105.7-76.2 236.4h34c0-121.4 18.7-219.6 42-219.6s42.2 90.8 42.2 202.8h33.8c0-112 19-202.8 42.3-202.8'));
+                ctx.restore();
 
-            // Divider
-            ctx.strokeStyle = '#f3e8ff';
-            ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(midX - 300, 700); ctx.lineTo(midX + 300, 700); ctx.stroke();
+                ctx.fillStyle = '#DA291C';
+                ctx.font = 'bold 40px Fredoka, sans-serif';
+                ctx.fillText("🎉 A McDonald's Birthday Party", midX, 255);
 
-            ctx.fillStyle = '#ec4899';
-            ctx.font = 'bold 46px Fredoka, sans-serif';
-            ctx.fillText('📅 Sunday, 11 October 2026', midX, 780);
-            ctx.fillText('⏰ 18:00 – 19:45', midX, 850);
+                ctx.fillStyle = '#a855f7';
+                ctx.font = 'bold 82px Fredoka, sans-serif';
+                ctx.fillText("Liuxin is turning 7!", midX, 345);
 
-            ctx.fillStyle = '#374151';
-            ctx.font = '38px Fredoka, sans-serif';
-            ctx.fillText("📍 McDonald's Marine Cove", midX, 940);
-            ctx.font = '30px Fredoka, sans-serif';
-            ctx.fillStyle = '#6b7280';
-            ctx.fillText('East Coast Park, Singapore', midX, 985);
+                // Framed hero photo (watermark cropped off the bottom)
+                if (photo) {
+                    const pw = 780, ph = 550, px = midX - pw / 2, py = 385, pr = 32;
+                    ctx.save();
+                    roundRect(ctx, px, py, pw, ph, pr);
+                    ctx.clip();
+                    const sw = photo.naturalWidth, sh = Math.round(photo.naturalHeight * 0.94);
+                    ctx.drawImage(photo, 0, 0, sw, sh, px, py, pw, ph);
+                    ctx.restore();
+                    ctx.lineWidth = 8;
+                    ctx.strokeStyle = '#f9a8d4';
+                    roundRect(ctx, px, py, pw, ph, pr);
+                    ctx.stroke();
+                }
 
-            ctx.fillStyle = '#a855f7';
-            ctx.font = 'bold 38px Fredoka, sans-serif';
-            ctx.fillText('🎨 Arts & Crafts  •  🍔 Happy Meal', midX, 1080);
-            ctx.fillText('🎂 Cake & Photos  •  🛍️ Goodie Bags', midX, 1135);
+                ctx.fillStyle = '#374151';
+                ctx.font = '32px Fredoka, sans-serif';
+                ctx.fillText("You're cordially invited to celebrate", midX, 995);
+                ctx.fillText("a fun-filled day with us! 🥳", midX, 1037);
 
-            ctx.fillStyle = '#9ca3af';
-            ctx.font = '30px Fredoka, sans-serif';
-            ctx.fillText('Please RSVP — we can’t wait to see you!', midX, 1220);
+                // Divider
+                ctx.strokeStyle = '#f3e8ff';
+                ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(midX - 300, 1085); ctx.lineTo(midX + 300, 1085); ctx.stroke();
 
-            const link = document.createElement('a');
-            link.download = "Liuxin-7th-Birthday-Invitation.png";
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            launchConfetti();
+                ctx.fillStyle = '#ec4899';
+                ctx.font = 'bold 44px Fredoka, sans-serif';
+                ctx.fillText('📅 Sunday, 11 October 2026', midX, 1150);
+                ctx.fillText('⏰ 18:00 – 19:45', midX, 1205);
+
+                ctx.fillStyle = '#374151';
+                ctx.font = '36px Fredoka, sans-serif';
+                ctx.fillText("📍 McDonald's Marine Cove", midX, 1278);
+                ctx.font = '28px Fredoka, sans-serif';
+                ctx.fillStyle = '#6b7280';
+                ctx.fillText('East Coast Park, Singapore 449876', midX, 1320);
+
+                ctx.fillStyle = '#a855f7';
+                ctx.font = 'bold 34px Fredoka, sans-serif';
+                ctx.fillText('🎨 Arts & Crafts  •  🍔 Happy Meal', midX, 1400);
+                ctx.fillText('🎂 Cake & Photos  •  🛍️ Goodie Bags', midX, 1448);
+
+                const link = document.createElement('a');
+                link.download = "Liuxin-7th-Birthday-Invitation.png";
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                launchConfetti();
+            };
+
+            // Load the hero photo first, then draw. Fall back to a photo-less
+            // card if the image can't be loaded.
+            const img = new Image();
+            img.onload = () => render(img);
+            img.onerror = () => render(null);
+            img.src = 'birthday-hero.jpg';
         }
 
         function roundRect(ctx, x, y, w, h, r) {

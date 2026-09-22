@@ -575,7 +575,7 @@
 
         /* ---------- Download invitation card (real PNG via canvas) ---------- */
         function downloadInvitation() {
-            const W = 1080, H = 1620;
+            const W = 1080, H = 1730;
             const canvas = document.createElement('canvas');
             canvas.width = W; canvas.height = H;
             const ctx = canvas.getContext('2d');
@@ -659,7 +659,23 @@
 
                 ctx.fillStyle = '#ec4899';
                 ctx.font = 'bold 34px Fredoka, sans-serif';
-                ctx.fillText('💌 RSVP to Hao  •  +65 89183498', midX, 1530);
+                ctx.fillText('💌 RSVP to Hao at +65 89183498', midX, 1520);
+
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '28px Fredoka, sans-serif';
+                ctx.fillText('or visit for meal options:', midX, 1566);
+
+                ctx.fillStyle = '#7c3aed';
+                ctx.font = 'bold 30px Fredoka, sans-serif';
+                const url = 'https://tinyurl.com/liuxinbirthday';
+                ctx.fillText(url, midX, 1610);
+                const uw = ctx.measureText(url).width;
+                ctx.strokeStyle = '#7c3aed';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(midX - uw / 2, 1618);
+                ctx.lineTo(midX + uw / 2, 1618);
+                ctx.stroke();
 
                 const link = document.createElement('a');
                 link.download = "Liuxin-7th-Birthday-Invitation.png";

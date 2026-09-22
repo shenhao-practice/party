@@ -345,7 +345,7 @@
                     <span class="text-3xl">🍔</span>
                     <div>
                         <strong class="block text-gray-900">Choice of main</strong>
-                        <span class="text-sm text-gray-600">Cheeseburger <em>or</em> 4-pc Chicken McNuggets®</span>
+                        <span class="text-sm text-gray-600">Cheeseburger, Vegetarian Cheeseburger 🌱 <em>or</em> 4-pc Chicken McNuggets®</span>
                     </div>
                 </div>
                 <div class="border-2 border-yellow-100 rounded-xl p-4 flex items-center gap-3">
@@ -695,6 +695,7 @@
             // "No preference" is first, so it is the default selection
             [['No preference', 'No preference'],
              ['Cheeseburger', 'Cheeseburger'],
+             ['Vegetarian Cheeseburger', 'Vegetarian Cheeseburger 🌱'],
              ['4-pc Chicken McNuggets', '4-pc Chicken McNuggets®']].forEach(([val, label]) => {
                 const o = document.createElement('option');
                 o.value = val;
